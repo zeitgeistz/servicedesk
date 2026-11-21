@@ -3,14 +3,22 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+function seedPassword(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Set ${name} in the environment before running the seed.`);
+  }
+  return value;
+}
+
 async function main() {
   console.log("🌱 Starting database seeding...");
 
-  // Hash passwords
-  const superAdminPassword = await bcrypt.hash("superadmin", 10);
-  const adminPassword = await bcrypt.hash("admin123", 10);
-  const agentPassword = await bcrypt.hash("agent123", 10);
-  const userPassword = await bcrypt.hash("user123", 10);
+  // Hash passwords. Set SEED_*_PASSWORD in the environment before seeding.
+  const superAdminPassword = await bcrypt.hash(seedPassword("SEED_SUPERADMIN_PASSWORD"), 10);
+  const adminPassword = await bcrypt.hash(seedPassword("SEED_ADMIN_PASSWORD"), 10);
+  const agentPassword = await bcrypt.hash(seedPassword("SEED_AGENT_PASSWORD"), 10);
+  const userPassword = await bcrypt.hash(seedPassword("SEED_USER_PASSWORD"), 10);
 
   // IMPORTANT: Create GLOBAL SUPER ADMIN without tenantId
   const superAdmin = await prisma.user.upsert({

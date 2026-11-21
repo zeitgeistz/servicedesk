@@ -44,6 +44,5 @@ next-env.d.ts
 
 uploads/
 
-# Allow .env files to be tracked
-!.env
-!.env.*
+# Keep the example env file trackable; real .env files stay ignored
+!.env.example
